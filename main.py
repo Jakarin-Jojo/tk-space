@@ -16,7 +16,7 @@ class SpaceGame(GameApp):
     def init_game(self):
         self.ship = Ship(self, CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
 
-        self.level = StatusWithText(self,100,580, 'Level: %d', 0)
+        self.level = StatusWithText(self, 100, 580, 'Level: %d', 0)
 
         self.score_wait = 0
         self.score = StatusWithText(self, 100, 20, 'Score: %d', 0)
@@ -46,8 +46,8 @@ class SpaceGame(GameApp):
         return len(self.bullets)
 
     def bomb(self):
-        if self.bomb_power == BOMB_FULL_POWER:
-            self.bomb_power = 0
+        if self.bomb_power.value == BOMB_FULL_POWER:
+            self.bomb_power.value = 0
 
             self.bomb_canvas_id = self.canvas.create_oval(
                 self.ship.x - BOMB_RADIUS, 
@@ -62,6 +62,7 @@ class SpaceGame(GameApp):
                 if self.ship.distance_to(e) <= BOMB_RADIUS:
                     e.to_be_deleted = True
 
+
     def update_score(self):
         self.score_wait += 1
         if self.score_wait >= SCORE_WAIT:
@@ -70,7 +71,7 @@ class SpaceGame(GameApp):
 
     def update_bomb_power(self):
         self.bomb_wait += 1
-        if (self.bomb_wait >= BOMB_WAIT) and (self.bomb_power != BOMB_FULL_POWER):
+        if (self.bomb_wait >= BOMB_WAIT) and (self.bomb_power.value != BOMB_FULL_POWER):
             self.bomb_power.value += 1
             self.bomb_wait = 0
 
@@ -152,8 +153,6 @@ class SpaceGame(GameApp):
         self.update_score()
         self.update_bomb_power()
 
-    
-    
     def init_key_handlers(self):
         key_pressed_handler = ShipMovementKeyPressedHandler(self, self.ship)
         key_pressed_handler = BombKeyPressedHandler(self, self.ship, key_pressed_handler)
