@@ -48,7 +48,7 @@ class SpaceGame(GameApp):
     def bomb(self):
         if self.bomb_power.value == BOMB_FULL_POWER:
             self.bomb_power.value = 0
-            self.bomb_circle()
+            self.bomb_circle
             
             self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
 
