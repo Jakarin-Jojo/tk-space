@@ -46,19 +46,24 @@ class SpaceGame(GameApp):
         return len(self.bullets)
 
     def bomb(self):
-        if self.bomb_power == BOMB_FULL_POWER:
-            self.bomb_power = 0
+        if self.bomb_power.value == BOMB_FULL_POWER:
+            self.bomb_power.value = 0
+            self.bomb_circle()
+            
+            self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
 
-            self.bomb_canvas_id = self.canvas.create_oval(
+            self.enemy_destroying
+    
+    def bomb_circle(self):
+        self.bomb_canvas_id = self.canvas.create_oval(
                 self.ship.x - BOMB_RADIUS, 
                 self.ship.y - BOMB_RADIUS,
                 self.ship.x + BOMB_RADIUS, 
                 self.ship.y + BOMB_RADIUS
             )
-
-            self.after(200, lambda: self.canvas.delete(self.bomb_canvas_id))
-
-            for e in self.enemies:
+            
+    def enemy_destroying(self):
+        for e in self.enemies:
                 if self.ship.distance_to(e) <= BOMB_RADIUS:
                     e.to_be_deleted = True
 
@@ -70,7 +75,7 @@ class SpaceGame(GameApp):
 
     def update_bomb_power(self):
         self.bomb_wait += 1
-        if (self.bomb_wait >= BOMB_WAIT) and (self.bomb_power != BOMB_FULL_POWER):
+        if (self.bomb_wait >= BOMB_WAIT) and (self.bomb_power.value != BOMB_FULL_POWER):
             self.bomb_power.value += 1
             self.bomb_wait = 0
 
@@ -150,10 +155,8 @@ class SpaceGame(GameApp):
         self.enemies = self.update_and_filter_deleted(self.enemies)
 
         self.update_score()
-        self.update_bomb_power()
-
-    
-    
+        self.update_bomb_power()  
+ 
     def init_key_handlers(self):
         key_pressed_handler = ShipMovementKeyPressedHandler(self, self.ship)
         key_pressed_handler = BombKeyPressedHandler(self, self.ship, key_pressed_handler)
